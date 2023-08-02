@@ -1,3 +1,5 @@
+version: '3.3'
+
 name: media-stack
 
 #this contains jackett,sonarr,radarr,transmission
@@ -119,55 +121,55 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/media-server/jackett'    
+      device: '/mnt/external-homelab/jackett'    
   jackett-blackhole: 
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/media-server/jackett-blackhole'        
+      device: '/mnt/external-homelab/jackett-blackhole'        
   prowlarr-config: 
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/media-server/prowlarr'  
+      device: '/mnt/external-homelab/prowlarr'  
   radarr-config: 
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/media-server/radarr'  
+      device: '/mnt/external-homelab/radarr'  
   sonarr-config:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/media-server/sonarr'   
+      device: '/mnt/external-homelab/sonarr'   
   torrent-downloads:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/media-server/torrent-downloads'    
+      device: '/mnt/external-homelab/torrent-downloads'    
   tx-config:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/media-server/tx-config' 
+      device: '/mnt/external-homelab/tx-config' 
   tx-watch:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/media-server/tx-watch' 
+      device: '/mnt/external-homelab/tx-watch' 
   jellyfin-config:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/media-server/jellyfin'  
+      device: '/mnt/external-homelab/jellyfin'  
 
 networks:
   mediaServerNetwork:
