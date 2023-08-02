@@ -1,5 +1,3 @@
-version: '1'
-
 name: media-stack
 
 #this contains jackett,sonarr,radarr,transmission
