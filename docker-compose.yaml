@@ -1,0 +1,133 @@
+version: '1'
+
+name: media-stack
+
+#this contains jackett,sonarr,radarr,transmission
+# https://medium.com/linux-shots/self-host-media-stack-jellyfin-radarr-sonarr-jackett-transmission-3e6a0adf716e 
+# template - https://github.com/navilg/media-stack/blob/main/docker-compose.yml#L230
+
+services:
+  jackett: 
+    image: linuxserver/jackett:latest
+    container_name: jackett
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Recife
+      - AUTO_UPDATE=true #optional
+      - RUN_OPTS= #optional
+    volumes:
+      - jackett-config:/config 
+      - jackett-blackhole:/downloads 
+    networks:
+      - mediaServerNetwork
+    ports:
+      - 9117:9117
+    restart: unless-stopped
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Recife
+    volumes:
+      - prowlarr-config:/config 
+    networks:
+      - mediaServerNetwork
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Recife
+    volumes:
+      - radarr-config:/config
+      - torrent-downloads:/downloads 
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+  sonarr:
+    image: linuxserver/sonarr:latest
+    container_name: sonarr
+    networks:
+      - mediaServerNetwork
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Recife
+    volumes:
+      - sonarr-config:/config
+      - torrent-downloads:/downloads
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Recife
+      - TRANSMISSION_WEB_HOME= #optional
+      - USER= #optional
+      - PASS= #optional
+      - WHITELIST= #optional
+      - PEERPORT= #optional
+      - HOST_WHITELIST= #optional
+    volumes:
+      - tx-config:/config #NEED TO SETUP THE VOLUME
+      - torrent-downloads:/downloads # NEED TO SETUP THE VOLUME
+      - tx-watch:/watch # NEED TO SETUP THE VOLUME
+    networks:
+      - mediaServerNetwork
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+  
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    networks:
+      - mediaServerNetwork
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Recife
+    volumes:
+      - jellyfin-config:/config
+      - torrent-downloads:/data
+    devices:
+      - /dev/fb0:/dev/fb0 # Mount GPU device as the id of the device
+    ports:
+      - 8096:8096
+      - 7359:7359/udp
+      - 8920:8920
+    restart: unless-stopped
+
+volumes:
+  jackett-config: /media-server/jackett
+  jackett-blackhole: /media-server/jackett
+  prowlarr-config: /media-server/prowlarr
+  radarr-config: /media-server/radarr
+  sonarr-config: /media-server/sonarr
+  torrent-downloads: /media-server/torrent-downloads
+  tx-config: /media-server/transmission
+  tx-watch: /media-server/transmission
+  jellyfin-config: /media-server/jellyfin
+
+networks:
+  mediaServerNetwork:
+    external: true
+
+    
