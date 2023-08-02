@@ -1,7 +1,4 @@
-version: '3.3'
-
-name: media-stack
-
+version: '3.8'
 #this contains jackett,sonarr,radarr,transmission
 # https://medium.com/linux-shots/self-host-media-stack-jellyfin-radarr-sonarr-jackett-transmission-3e6a0adf716e 
 # template - https://github.com/navilg/media-stack/blob/main/docker-compose.yml#L230
