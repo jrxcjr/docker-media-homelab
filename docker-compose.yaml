@@ -116,15 +116,60 @@ services:
     restart: unless-stopped
 
 volumes:
-  jackett-config: /media-server/jackett
-  jackett-blackhole: /media-server/jackett
-  prowlarr-config: /media-server/prowlarr
-  radarr-config: /media-server/radarr
-  sonarr-config: /media-server/sonarr
-  torrent-downloads: /media-server/torrent-downloads
-  tx-config: /media-server/transmission
-  tx-watch: /media-server/transmission
-  jellyfin-config: /media-server/jellyfin
+  jackett-config:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/media-server/jackett'    
+  jackett-blackhole: 
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/media-server/jackett-blackhole'        
+  prowlarr-config: 
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/media-server/prowlarr'  
+  radarr-config: 
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/media-server/radarr'  
+  sonarr-config:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/media-server/sonarr'   
+  torrent-downloads:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/media-server/torrent-downloads'    
+  tx-config:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/media-server/tx-config' 
+  tx-watch:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/media-server/tx-watch' 
+  jellyfin-config:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/media-server/jellyfin'  
 
 networks:
   mediaServerNetwork:
