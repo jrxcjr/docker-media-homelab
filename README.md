@@ -6,3 +6,5 @@ The services that are contained in the dockerfile allow you to setup a media ser
 The way to stream the downloaded in sonarr/radarr, you need to setup the Jellyfin server and access it in any of the available devices that have the jellyfin app.
 
 To better run this setup and easily access and setup on the associated devices, it is highly recommended that you setup a static ip for your host network or a reverse proxy with the properly ssl certificates.
+
+The management of the running containers is done via Portainer, for ease of access and monitoring/reading logs. See https://docs.portainer.io/start/install-ce/server/docker/linux.
