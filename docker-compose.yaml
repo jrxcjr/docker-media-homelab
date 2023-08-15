@@ -1,11 +1,11 @@
 version: '3.8'
 #this contains jackett,sonarr,radarr,transmission
 # https://medium.com/linux-shots/self-host-media-stack-jellyfin-radarr-sonarr-jackett-transmission-3e6a0adf716e 
-# template - https://github.com/navilg/media-stack/blob/main/docker-compose.yml#L230
+# template used to build this docker file - https://github.com/navilg/media-stack/blob/main/docker-compose.yml#L230
 
 services:
-  jackett: 
-    image: linuxserver/jackett:latest
+  jackett: #Jackett is the service that is used to setup all the Torznab indexers to fetch the magnets for download. 
+    image: linuxserver/jackett:latest 
     container_name: jackett
     environment:
       - PUID=1000
@@ -17,12 +17,12 @@ services:
       - jackett-config:/config 
       - jackett-blackhole:/downloads 
     networks:
-      - mediaServerNetwork
+      - mediaServerNetwork #This is the internal network that must run all of the comms between containers.
     ports:
       - 9117:9117
     restart: unless-stopped
 
-  prowlarr:
+  prowlarr: #The prowlarr service, can be used to setup indexers that automatically sync with Sonarr and Radarr
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
     environment:
@@ -37,7 +37,7 @@ services:
       - 9696:9696
     restart: unless-stopped
 
-  radarr:
+  radarr: #Radarr is the service used to track all the torrent files and requests for movies.  
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     environment:
@@ -51,7 +51,7 @@ services:
       - 7878:7878
     restart: unless-stopped
 
-  sonarr:
+  sonarr: #Sonarr is the service used to track all the torrent files and requests for tv series. 
     image: linuxserver/sonarr:latest
     container_name: sonarr
     networks:
@@ -67,7 +67,7 @@ services:
       - 8989:8989
     restart: unless-stopped
 
-  transmission:
+  transmission: #Transmission is the torrent downloading service for the requested tv series/movies.
     image: lscr.io/linuxserver/transmission:latest
     container_name: transmission
     environment:
@@ -81,9 +81,9 @@ services:
       - PEERPORT= #optional
       - HOST_WHITELIST= #optional
     volumes:
-      - tx-config:/config #NEED TO SETUP THE VOLUME
-      - torrent-downloads:/downloads # NEED TO SETUP THE VOLUME
-      - tx-watch:/watch # NEED TO SETUP THE VOLUME
+      - tx-config:/config
+      - torrent-downloads:/downloads 
+      - tx-watch:/watch 
     networks:
       - mediaServerNetwork
     ports:
@@ -105,7 +105,7 @@ services:
       - jellyfin-config:/config
       - torrent-downloads:/data
     devices:
-      - /dev/fb0:/dev/fb0 # Mount GPU device as the id of the device
+      - /dev/fb0:/dev/fb0 #mount GPU device as the id of the device to help the rendering of the media
     ports:
       - 8096:8096
       - 7359:7359/udp
@@ -114,11 +114,12 @@ services:
 
 volumes:
   jackett-config:
-    driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/mnt/external-homelab/jackett'    
+    driver: local #This is the type of setup that you must make whenever you have a local hard drive
+    #that contains all of the media
+    driver_opts: #See https://docs.docker.com/storage/volumes/
+      type: 'none' 
+      o: 'bind' #see https://docs.docker.com/storage/bind-mounts/
+      device: '/mnt/external-homelab/jackett' #this is the location that the volume must be created to be able to store the media.
   jackett-blackhole: 
     driver: local
     driver_opts:
@@ -168,8 +169,8 @@ volumes:
       o: 'bind'
       device: '/mnt/external-homelab/jellyfin'  
 
-networks:
-  mediaServerNetwork:
+networks: #See https://docs.docker.com/compose/networking/
+  mediaServerNetwork: #To run the creation of the network, please run the command `sudo docker network create mediaServerNetwork`
     external: true
 
     
