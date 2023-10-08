@@ -2,7 +2,7 @@ version: '3.8'
 #this contains jackett,sonarr,radarr,transmission
 # https://medium.com/linux-shots/self-host-media-stack-jellyfin-radarr-sonarr-jackett-transmission-3e6a0adf716e 
 # template used to build this docker file - https://github.com/navilg/media-stack/blob/main/docker-compose.yml#L230
-
+name: 'homelab-mediaserver'
 services:
   jackett: #Jackett is the service that is used to setup all the Torznab indexers to fetch the magnets for download. 
     image: linuxserver/jackett:latest 
@@ -65,6 +65,19 @@ services:
       - torrent-downloads:/downloads
     ports:
       - 8989:8989
+    restart: unless-stopped
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Recife
+    volumes:
+      - bazarr-config:/config
+    ports:
+      - 6767:6767
     restart: unless-stopped
 
   transmission: #Transmission is the torrent downloading service for the requested tv series/movies.
@@ -143,7 +156,13 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/mnt/external-homelab/sonarr'   
+      device: '/mnt/external-homelab/sonarr'
+  bazarr-config:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/mnt/external-homelab/bazarr'       
   torrent-downloads:
     driver: local
     driver_opts:
